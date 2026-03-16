@@ -1,4 +1,4 @@
-name: iOS E2E test with simulator recording
+name: E2E test with video recording
 
 on:
   workflow_dispatch:
