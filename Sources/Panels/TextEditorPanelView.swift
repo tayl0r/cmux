@@ -1,6 +1,7 @@
 import AppKit
 import SwiftUI
 import CodeEditor
+import Highlightr
 
 // MARK: - Text Editor Theme Settings
 
@@ -10,34 +11,36 @@ enum TextEditorThemeSettings {
     static let defaultDarkTheme = "monokai-sublime"
     static let defaultLightTheme = "github"
 
-    /// Dark themes (background luminance < 0.5), sorted alphabetically.
-    /// Derived from the bundled Highlightr v3 theme CSS files.
-    static let darkThemes: [String] = [
-        "a11y-dark", "agate", "an-old-hope", "androidstudio", "arta",
-        "atelier-cave-dark", "atelier-dune-dark", "atelier-estuary-dark",
-        "atelier-forest-dark", "atelier-heath-dark", "atelier-lakeside-dark",
-        "atelier-plateau-dark", "atelier-savanna-dark", "atelier-seaside-dark",
-        "atelier-sulphurpool-dark", "atom-one-dark", "atom-one-dark-reasonable",
-        "codepen-embed", "darcula", "dark", "dracula", "far", "gml", "gruvbox-dark",
-        "hopscotch", "hybrid", "ir-black", "isbl-editor-dark", "kimbie.dark",
-        "monokai", "monokai-sublime", "nord", "obsidian", "ocean", "paraiso-dark",
-        "qtcreator_dark", "railscasts", "rainbow", "shades-of-purple",
-        "solarized-dark", "sunburst", "tomorrow-night", "tomorrow-night-blue",
-        "tomorrow-night-eighties", "vs2015", "xcode-dark", "xt256", "zenburn"
-    ]
+    /// Classified theme lists, built once at launch from the actual bundled themes.
+    /// Uses Highlightr to load each theme and check its background luminance.
+    static let darkThemes: [String] = classifiedThemes.dark
+    static let lightThemes: [String] = classifiedThemes.light
 
-    /// Light themes (background luminance >= 0.5), sorted alphabetically.
-    /// Derived from the bundled Highlightr v3 theme CSS files.
-    static let lightThemes: [String] = [
-        "a11y-light", "arduino-light", "atelier-cave-light", "atelier-dune-light",
-        "atelier-estuary-light", "atelier-forest-light", "atelier-heath-light",
-        "atelier-lakeside-light", "atelier-plateau-light", "atelier-savanna-light",
-        "atelier-seaside-light", "atelier-sulphurpool-light", "atom-one-light",
-        "brown-paper", "color-brewer", "default", "docco", "foundation", "github",
-        "grayscale", "gruvbox-light", "idea", "kimbie.light", "magula", "mono-blue",
-        "paraiso-light", "purebasic", "qtcreator_light", "routeros",
-        "solarized-light", "xcode"
-    ]
+    private static let classifiedThemes: (dark: [String], light: [String]) = {
+        var dark: [String] = []
+        var light: [String] = []
+        guard let highlightr = Highlightr() else { return (dark, light) }
+
+        for theme in CodeEditor.availableThemes {
+            let name = theme.rawValue
+            highlightr.setTheme(to: name)
+            guard let bg = highlightr.theme?.themeBackgroundColor else { continue }
+            #if canImport(AppKit)
+            guard let rgb = bg.usingColorSpace(.sRGB) else { continue }
+            let luminance = 0.299 * rgb.redComponent + 0.587 * rgb.greenComponent + 0.114 * rgb.blueComponent
+            #else
+            var r: CGFloat = 0, g: CGFloat = 0, b: CGFloat = 0
+            bg.getRed(&r, green: &g, blue: &b, alpha: nil)
+            let luminance = 0.299 * r + 0.587 * g + 0.114 * b
+            #endif
+            if luminance < 0.5 {
+                dark.append(name)
+            } else {
+                light.append(name)
+            }
+        }
+        return (dark.sorted(), light.sorted())
+    }()
 
     /// Display-friendly name: "monokai-sublime" → "Monokai Sublime"
     static func displayName(for theme: String) -> String {
