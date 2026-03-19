@@ -1,11 +1,10 @@
 import SwiftUI
 
 /// Structural container for the file browser drawer.
-/// Shows a header with title + close button, and the file browser tree.
+/// Shows the file browser tree with a spacer for titlebar button clearance.
 struct FileBrowserDrawerView: View {
     let directory: String?
     let onFileSelected: (String) -> Void
-    let onClose: () -> Void
 
     @Environment(\.colorScheme) private var colorScheme
 
@@ -34,22 +33,6 @@ struct FileBrowserDrawerView: View {
                 .fill(Color.primary.opacity(0.12))
                 .frame(width: 1)
         }
-    }
-
-    private var headerView: some View {
-        HStack {
-            Button {
-                onClose()
-            } label: {
-                Image(systemName: "xmark")
-                    .font(.system(size: 10, weight: .medium))
-                    .foregroundColor(.secondary)
-            }
-            .buttonStyle(.plain)
-            Spacer()
-        }
-        .padding(.horizontal, 12)
-        .padding(.vertical, 8)
     }
 
     private var emptyStateView: some View {

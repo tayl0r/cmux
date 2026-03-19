@@ -85,7 +85,12 @@ struct TextEditorPanelView: View {
         }
         .overlay {
             if isVisibleInUI {
-                TextEditorPointerObserver(onPointerDown: onRequestPanelFocus)
+                TextEditorPointerObserver(
+                    onPointerDown: onRequestPanelFocus,
+                    onSave: {
+                        try? panel.save()
+                    }
+                )
             }
         }
         .onChange(of: panel.focusFlashToken) { _ in
@@ -265,27 +270,32 @@ struct TextEditorPanelView: View {
 
 private struct TextEditorPointerObserver: NSViewRepresentable {
     let onPointerDown: () -> Void
+    var onSave: (() -> Void)?
 
     func makeNSView(context: Context) -> TextEditorPointerObserverView {
         let view = TextEditorPointerObserverView()
         view.onPointerDown = onPointerDown
+        view.onSave = onSave
         return view
     }
 
     func updateNSView(_ nsView: TextEditorPointerObserverView, context: Context) {
         nsView.onPointerDown = onPointerDown
+        nsView.onSave = onSave
     }
 }
 
 final class TextEditorPointerObserverView: NSView {
     var onPointerDown: (() -> Void)?
-    private var eventMonitor: Any?
+    var onSave: (() -> Void)?
+    private var pointerMonitor: Any?
+    private var keyMonitor: Any?
 
     override var mouseDownCanMoveWindow: Bool { false }
 
     override init(frame frameRect: NSRect) {
         super.init(frame: frameRect)
-        installEventMonitor()
+        installEventMonitors()
     }
 
     required init?(coder: NSCoder) {
@@ -293,8 +303,11 @@ final class TextEditorPointerObserverView: NSView {
     }
 
     deinit {
-        if let eventMonitor {
-            NSEvent.removeMonitor(eventMonitor)
+        if let pointerMonitor {
+            NSEvent.removeMonitor(pointerMonitor)
+        }
+        if let keyMonitor {
+            NSEvent.removeMonitor(keyMonitor)
         }
     }
 
@@ -302,8 +315,8 @@ final class TextEditorPointerObserverView: NSView {
         nil
     }
 
-    private func installEventMonitor() {
-        eventMonitor = NSEvent.addLocalMonitorForEvents(matching: [.leftMouseDown]) { [weak self] event in
+    private func installEventMonitors() {
+        pointerMonitor = NSEvent.addLocalMonitorForEvents(matching: [.leftMouseDown]) { [weak self] event in
             guard let self,
                   event.type == .leftMouseDown,
                   let window = self.window,
@@ -316,6 +329,20 @@ final class TextEditorPointerObserverView: NSView {
                 }
             }
             return event
+        }
+
+        keyMonitor = NSEvent.addLocalMonitorForEvents(matching: [.keyDown]) { [weak self] event in
+            guard let self,
+                  event.modifierFlags.intersection(.deviceIndependentFlagsMask) == .command,
+                  event.charactersIgnoringModifiers == "s",
+                  let window = self.window,
+                  event.window === window,
+                  !self.isHiddenOrHasHiddenAncestor else { return event }
+            DispatchQueue.main.async { [weak self] in
+                self?.onSave?()
+            }
+            // Consume the event so it doesn't propagate further.
+            return nil
         }
     }
 }

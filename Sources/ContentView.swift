@@ -2632,9 +2632,6 @@ struct ContentView: View {
             directory: directory,
             onFileSelected: { path in
                 openFileInTextEditor(path)
-            },
-            onClose: {
-                fileBrowserDrawerState.toggle()
             }
         )
     }
