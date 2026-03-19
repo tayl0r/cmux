@@ -663,7 +663,6 @@
 					A5001271 /* PostHog */,
 					A5001261 /* Bonsplit */,
 					A5001291 /* MarkdownUI */,
-					FB300001 /* Highlightr */,
 					FB400001 /* CodeEditor */,
 				);
 			name = GhosttyTabs;
@@ -785,7 +784,6 @@
 					A5001272 /* XCRemoteSwiftPackageReference "posthog-ios" */,
 					A5001292 /* XCRemoteSwiftPackageReference "swift-markdown-ui" */,
 					A5001260 /* XCLocalSwiftPackageReference "bonsplit" */,
-					FB300002 /* XCRemoteSwiftPackageReference "Highlightr" */,
 					FB400002 /* XCRemoteSwiftPackageReference "CodeEditor" */,
 				);
 			productRefGroup = A5001042 /* Products */;
@@ -1316,20 +1314,12 @@
 				isa = XCLocalSwiftPackageReference;
 				relativePath = vendor/bonsplit;
 			};
-			FB300002 /* XCRemoteSwiftPackageReference "Highlightr" */ = {
-				isa = XCRemoteSwiftPackageReference;
-				repositoryURL = "https://github.com/raspu/Highlightr.git";
-				requirement = {
-					kind = upToNextMajorVersion;
-					minimumVersion = 2.2.1;
-				};
-			};
 			FB400002 /* XCRemoteSwiftPackageReference "CodeEditor" */ = {
 				isa = XCRemoteSwiftPackageReference;
 				repositoryURL = "https://github.com/tayl0r/CodeEditor.git";
 				requirement = {
 					kind = branch;
-					branch = main;
+					branch = develop;
 				};
 			};
 /* End XCRemoteSwiftPackageReference section */
@@ -1359,11 +1349,6 @@
 				isa = XCSwiftPackageProductDependency;
 				package = A5001292 /* XCRemoteSwiftPackageReference "swift-markdown-ui" */;
 				productName = MarkdownUI;
-			};
-			FB300001 /* Highlightr */ = {
-				isa = XCSwiftPackageProductDependency;
-				package = FB300002 /* XCRemoteSwiftPackageReference "Highlightr" */;
-				productName = Highlightr;
 			};
 			FB400001 /* CodeEditor */ = {
 				isa = XCSwiftPackageProductDependency;
