@@ -11,71 +11,32 @@ enum TextEditorThemeSettings {
     static let defaultLightTheme = "github"
 
     /// Dark themes (background luminance < 0.5), sorted alphabetically.
+    /// Derived from the bundled Highlightr v3 theme CSS files.
     static let darkThemes: [String] = [
-        "3024", "a11y-dark", "agate", "an-old-hope", "androidstudio", "apathy",
-        "apprentice", "arta", "ashes", "atelier-cave-dark", "atelier-cave",
-        "atelier-dune-dark", "atelier-dune", "atelier-estuary-dark", "atelier-estuary",
-        "atelier-forest-dark", "atelier-forest", "atelier-heath-dark", "atelier-heath",
-        "atelier-lakeside-dark", "atelier-lakeside", "atelier-plateau-dark",
-        "atelier-plateau", "atelier-savanna-dark", "atelier-savanna",
-        "atelier-seaside-dark", "atelier-seaside", "atelier-sulphurpool-dark",
-        "atelier-sulphurpool", "atlas", "atom-one-dark-reasonable", "atom-one-dark",
-        "bespin", "black-metal-bathory", "black-metal-burzum",
-        "black-metal-dark-funeral", "black-metal-gorgoroth", "black-metal-immortal",
-        "black-metal-khold", "black-metal-marduk", "black-metal-mayhem",
-        "black-metal-nile", "black-metal-venom", "black-metal", "brewer", "bright",
-        "brogrammer", "brush-trees-dark", "chalk", "circus", "classic-dark",
-        "codepen-embed", "codeschool", "colors", "cybertopia-cherry",
-        "cybertopia-dimmer", "cybertopia-icecap", "cybertopia-saturated", "danqing",
-        "darcula", "dark-violet", "dark", "darkmoss", "darktooth", "decaf",
-        "default-dark", "devibeans", "dracula", "edge-dark", "eighties", "embers",
-        "equilibrium-dark", "equilibrium-gray-dark", "espresso", "eva-dim", "eva",
-        "felipec", "flat", "framer", "gigavolt", "github-dark-dimmed", "github-dark",
-        "gml", "google-dark", "gradient-dark", "grayscale-dark", "green-screen",
-        "gruvbox-dark-hard", "gruvbox-dark-medium", "gruvbox-dark-pale",
-        "gruvbox-dark-soft", "gruvbox-dark", "hardcore", "harmonic16-dark",
-        "heetch-dark", "helios", "hopscotch", "horizon-dark", "humanoid-dark",
-        "hybrid", "ia-dark", "icy-dark", "ir-black", "isbl-editor-dark", "isotope",
-        "kimber", "kimbie-dark", "kimbie.dark", "lioshi", "london-tube", "macintosh",
-        "marrakesh", "materia", "material-darker", "material-palenight",
-        "material-vivid", "material", "mellow-purple", "mocha", "monokai-sublime",
-        "monokai", "nebula", "night-owl", "nnfx-dark", "nord", "nova", "obsidian",
-        "ocean", "oceanicnext", "onedark", "outrun-dark", "panda-syntax-dark",
-        "papercolor-dark", "paraiso-dark", "paraiso", "pasque", "phd", "pico", "pop",
-        "porple", "qtcreator-dark", "qtcreator_dark", "qualia", "railscasts",
-        "rainbow", "rebecca", "ros-pine-moon", "ros-pine", "rose-pine-moon",
-        "rose-pine", "sandcastle", "seti-ui", "shades-of-purple", "silk-dark",
-        "snazzy", "solar-flare", "solarized-dark", "spacemacs", "srcery",
-        "stackoverflow-dark", "summercamp", "summerfruit-dark", "sunburst",
-        "synth-midnight-terminal-dark", "tango", "tender", "tokyo-night-dark",
-        "tomorrow-night-blue", "tomorrow-night-bright", "tomorrow-night-eighties",
-        "tomorrow-night", "twilight", "unikitty-dark", "vs2015", "vulcan",
-        "windows-10", "windows-95", "windows-high-contrast", "windows-nt",
-        "woodland", "xcode-dark", "xcode-dusk", "xt256", "zenburn"
+        "a11y-dark", "agate", "an-old-hope", "androidstudio", "arta",
+        "atelier-cave-dark", "atelier-dune-dark", "atelier-estuary-dark",
+        "atelier-forest-dark", "atelier-heath-dark", "atelier-lakeside-dark",
+        "atelier-plateau-dark", "atelier-savanna-dark", "atelier-seaside-dark",
+        "atelier-sulphurpool-dark", "atom-one-dark", "atom-one-dark-reasonable",
+        "codepen-embed", "darcula", "dark", "dracula", "far", "gml", "gruvbox-dark",
+        "hopscotch", "hybrid", "ir-black", "isbl-editor-dark", "kimbie.dark",
+        "monokai", "monokai-sublime", "nord", "obsidian", "ocean", "paraiso-dark",
+        "qtcreator_dark", "railscasts", "rainbow", "shades-of-purple",
+        "solarized-dark", "sunburst", "tomorrow-night", "tomorrow-night-blue",
+        "tomorrow-night-eighties", "vs2015", "xcode-dark", "xt256", "zenburn"
     ]
 
     /// Light themes (background luminance >= 0.5), sorted alphabetically.
+    /// Derived from the bundled Highlightr v3 theme CSS files.
     static let lightThemes: [String] = [
-        "1c-light", "a11y-light", "arduino-light", "ascetic", "atelier-cave-light",
-        "atelier-dune-light", "atelier-estuary-light", "atelier-forest-light",
-        "atelier-heath-light", "atelier-lakeside-light", "atelier-plateau-light",
-        "atelier-savanna-light", "atelier-seaside-light", "atelier-sulphurpool-light",
-        "atom-one-light", "brush-trees", "classic-light", "color-brewer", "cupcake",
-        "cupertino", "default-light", "default", "dirtysea", "docco", "edge-light",
-        "equilibrium-gray-light", "equilibrium-light", "foundation", "fruit-soda",
-        "github", "google-light", "googlecode", "gradient-light", "grayscale-light",
-        "grayscale", "gruvbox-light-hard", "gruvbox-light-medium",
-        "gruvbox-light-soft", "gruvbox-light", "harmonic16-light", "heetch-light",
-        "horizon-light", "humanoid-light", "ia-light", "idea", "intellij-light",
-        "isbl-editor-light", "kimbie-light", "kimbie.light", "lightfair", "magula",
-        "material-lighter", "mexico-light", "mono-blue", "nnfx-light", "one-light",
-        "panda-syntax-light", "papercolor-light", "paraiso-light", "purebasic",
-        "qtcreator-light", "qtcreator_light", "ros-pine-dawn", "rose-pine-dawn",
-        "routeros", "sagelight", "school-book", "shapeshifter", "silk-light",
-        "solar-flare-light", "solarized-light", "stackoverflow-light",
-        "summerfruit-light", "synth-midnight-terminal-light", "tokyo-night-light",
-        "tomorrow", "unikitty-light", "vs", "windows-10-light", "windows-95-light",
-        "windows-high-contrast-light", "windows-nt-light", "xcode"
+        "a11y-light", "arduino-light", "atelier-cave-light", "atelier-dune-light",
+        "atelier-estuary-light", "atelier-forest-light", "atelier-heath-light",
+        "atelier-lakeside-light", "atelier-plateau-light", "atelier-savanna-light",
+        "atelier-seaside-light", "atelier-sulphurpool-light", "atom-one-light",
+        "brown-paper", "color-brewer", "default", "docco", "foundation", "github",
+        "grayscale", "gruvbox-light", "idea", "kimbie.light", "magula", "mono-blue",
+        "paraiso-light", "purebasic", "qtcreator_light", "routeros",
+        "solarized-light", "xcode"
     ]
 
     /// Display-friendly name: "monokai-sublime" → "Monokai Sublime"
