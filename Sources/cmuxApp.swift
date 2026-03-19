@@ -141,6 +141,7 @@ struct cmuxApp: App {
     @StateObject private var sidebarSelectionState = SidebarSelectionState()
     @StateObject private var cmuxConfigStore = CmuxConfigStore()
     @StateObject private var keyboardShortcutSettingsObserver = KeyboardShortcutSettingsObserver.shared
+    @StateObject private var fileBrowserDrawerState = FileBrowserDrawerState()
     private let primaryWindowId = UUID()
     @AppStorage(AppearanceSettings.appearanceModeKey) private var appearanceMode = AppearanceSettings.defaultMode.rawValue
     @AppStorage("titlebarControlsStyle") private var titlebarControlsStyle = TitlebarControlsStyle.classic.rawValue
@@ -320,6 +321,7 @@ struct cmuxApp: App {
                 .environmentObject(sidebarState)
                 .environmentObject(sidebarSelectionState)
                 .environmentObject(cmuxConfigStore)
+                .environmentObject(fileBrowserDrawerState)
                 .onAppear {
 #if DEBUG
                     if ProcessInfo.processInfo.environment["CMUX_UI_TEST_MODE"] == "1" {
@@ -667,6 +669,12 @@ struct cmuxApp: App {
                 splitCommandButton(title: String(localized: "menu.view.toggleSidebar", defaultValue: "Toggle Sidebar"), shortcut: menuShortcut(for: .toggleSidebar)) {
                     if AppDelegate.shared?.toggleSidebarInActiveMainWindow() != true {
                         sidebarState.toggle()
+                    }
+                }
+
+                splitCommandButton(title: String(localized: "menu.view.toggleFileBrowser", defaultValue: "Toggle File Browser"), shortcut: menuShortcut(for: .toggleFileBrowserDrawer)) {
+                    if AppDelegate.shared?.toggleFileBrowserDrawerInActiveMainWindow() != true {
+                        fileBrowserDrawerState.toggle()
                     }
                 }
 
@@ -3971,6 +3979,8 @@ struct SettingsView: View {
     @AppStorage("sidebarTintHexDark") private var sidebarTintHexDark: String?
     @AppStorage("sidebarTintOpacity") private var sidebarTintOpacity = SidebarTintDefaults.opacity
     @AppStorage("sidebarMatchTerminalBackground") private var sidebarMatchTerminalBackground = false
+    @AppStorage(TextEditorThemeSettings.darkThemeKey) private var editorDarkTheme = TextEditorThemeSettings.defaultDarkTheme
+    @AppStorage(TextEditorThemeSettings.lightThemeKey) private var editorLightTheme = TextEditorThemeSettings.defaultLightTheme
 
     @ObservedObject private var notificationStore = TerminalNotificationStore.shared
     @StateObject private var keyboardShortcutSettingsObserver = KeyboardShortcutSettingsObserver.shared
@@ -5612,6 +5622,32 @@ struct SettingsView: View {
                             .buttonStyle(.bordered)
                             .controlSize(.small)
                             .disabled(browserHistoryEntryCount == 0)
+                        }
+                    }
+
+                    SettingsSectionHeader(title: String(localized: "settings.section.textEditor", defaultValue: "Text Editor"))
+                        .accessibilityIdentifier("SettingsTextEditorSection")
+                    SettingsCard {
+                        SettingsPickerRow(
+                            String(localized: "settings.textEditor.darkTheme", defaultValue: "Dark Theme"),
+                            controlWidth: pickerColumnWidth,
+                            selection: $editorDarkTheme
+                        ) {
+                            ForEach(TextEditorThemeSettings.darkThemes, id: \.self) { theme in
+                                Text(TextEditorThemeSettings.displayName(for: theme)).tag(theme)
+                            }
+                        }
+
+                        SettingsCardDivider()
+
+                        SettingsPickerRow(
+                            String(localized: "settings.textEditor.lightTheme", defaultValue: "Light Theme"),
+                            controlWidth: pickerColumnWidth,
+                            selection: $editorLightTheme
+                        ) {
+                            ForEach(TextEditorThemeSettings.lightThemes, id: \.self) { theme in
+                                Text(TextEditorThemeSettings.displayName(for: theme)).tag(theme)
+                            }
                         }
                     }
 

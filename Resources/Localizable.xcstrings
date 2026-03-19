@@ -69051,6 +69051,176 @@
         }
       }
     },
+    "shortcut.toggleFileBrowserDrawer.label": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toggle File Browser"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ファイルブラウザを切替"
+          }
+        }
+      }
+    },
+    "fileBrowser.header.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Files"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ファイル"
+          }
+        }
+      }
+    },
+    "fileBrowser.emptyState": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Focus a terminal to browse its working directory."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ターミナルにフォーカスして作業ディレクトリを参照"
+          }
+        }
+      }
+    },
+    "textEditor.panel.kindLabel": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Text Editor"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "テキストエディタ"
+          }
+        }
+      }
+    },
+    "textEditor.externalChange.banner": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "File changed on disk"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ディスク上のファイルが変更されました"
+          }
+        }
+      }
+    },
+    "textEditor.externalChange.reload": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reload"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "再読み込み"
+          }
+        }
+      }
+    },
+    "textEditor.save.error": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Failed to save file"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ファイルの保存に失敗しました"
+          }
+        }
+      }
+    },
+    "textEditor.fileUnavailable.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "File unavailable"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ファイルが利用できません"
+          }
+        }
+      }
+    },
+    "textEditor.fileUnavailable.message": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The file may have been moved or deleted."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ファイルが移動または削除された可能性があります。"
+          }
+        }
+      }
+    },
+    "menu.view.toggleFileBrowser": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toggle File Browser"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ファイルブラウザを切替"
+          }
+        }
+      }
+    },
     "shortcut.toggleTerminalCopyMode.label": {
       "extractionState": "manual",
       "localizations": {
