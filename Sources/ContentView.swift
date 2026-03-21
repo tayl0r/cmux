@@ -3573,6 +3573,18 @@ struct ContentView: View {
             syncTrafficLightInset()
         })
 
+        view = AnyView(view.onChange(of: drawerWidth) { _ in
+            if let observedWindow {
+                TerminalWindowPortalRegistry.scheduleExternalGeometrySynchronize(for: observedWindow)
+            }
+        })
+
+        view = AnyView(view.onChange(of: fileBrowserDrawerState.isVisible) { _ in
+            if let observedWindow {
+                TerminalWindowPortalRegistry.scheduleExternalGeometrySynchronize(for: observedWindow)
+            }
+        })
+
         view = AnyView(view.onChange(of: sidebarState.persistedWidth) { newValue in
             let sanitized = normalizedSidebarWidth(newValue)
             if abs(newValue - sanitized) > 0.5 {

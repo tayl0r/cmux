@@ -50,17 +50,17 @@ final class TextEditorPanel: Panel, ObservableObject {
 
     // MARK: - Init
 
+    private static let ioQueue = DispatchQueue(label: "com.cmux.text-editor-io", qos: .userInitiated)
+    private var loadGeneration: UInt64 = 0
+
     init(workspaceId: UUID, filePath: String) {
         self.id = UUID()
         self.workspaceId = workspaceId
         self.filePath = filePath
         self.displayTitle = (filePath as NSString).lastPathComponent
 
-        loadFileContent()
+        loadFileContentAsync()
         startFileWatcher()
-        if isFileUnavailable && fileWatchSource == nil {
-            scheduleReattach(attempt: 1)
-        }
     }
 
     // MARK: - Panel protocol
@@ -104,26 +104,50 @@ final class TextEditorPanel: Panel, ObservableObject {
 
     /// Reload content from disk, discarding any unsaved edits.
     func reloadFromDisk() {
-        loadFileContent()
+        loadFileContentAsync()
         isDirty = false
         hasExternalChange = false
     }
 
     // MARK: - File I/O
 
-    private func loadFileContent() {
-        do {
-            let newContent = try String(contentsOfFile: filePath, encoding: .utf8)
-            content = newContent
-            isFileUnavailable = false
-        } catch {
-            if let data = FileManager.default.contents(atPath: filePath),
-               let decoded = String(data: data, encoding: .isoLatin1) {
-                content = decoded
-                isFileUnavailable = false
-            } else {
-                isFileUnavailable = true
+    /// Read file content on a background queue to avoid blocking the main thread.
+    private func loadFileContentAsync() {
+        loadGeneration &+= 1
+        let generation = loadGeneration
+        let path = filePath
+        Self.ioQueue.async { [weak self] in
+            let result = Self.readFile(atPath: path)
+            DispatchQueue.main.async {
+                guard let self, self.loadGeneration == generation else { return }
+                switch result {
+                case .success(let text):
+                    self.content = text
+                    self.isFileUnavailable = false
+                    if self.fileWatchSource == nil && !self.isClosed {
+                        self.startFileWatcher()
+                    }
+                case .failure:
+                    self.isFileUnavailable = true
+                    if self.fileWatchSource == nil && !self.isClosed {
+                        self.scheduleReattach(attempt: 1)
+                    }
+                }
             }
+        }
+    }
+
+    /// Pure function — safe to call from any thread.
+    private static func readFile(atPath path: String) -> Result<String, Error> {
+        do {
+            let text = try String(contentsOfFile: path, encoding: .utf8)
+            return .success(text)
+        } catch {
+            if let data = FileManager.default.contents(atPath: path),
+               let decoded = String(data: data, encoding: .isoLatin1) {
+                return .success(decoded)
+            }
+            return .failure(error)
         }
     }
 
@@ -157,7 +181,7 @@ final class TextEditorPanel: Panel, ObservableObject {
                             self.scheduleReattach(attempt: 1)
                         }
                     } else {
-                        self.loadFileContent()
+                        self.loadFileContentAsync()
                         if self.isFileUnavailable {
                             self.scheduleReattach(attempt: 1)
                         } else {
@@ -170,7 +194,7 @@ final class TextEditorPanel: Panel, ObservableObject {
                     if self.isDirty {
                         self.hasExternalChange = true
                     } else {
-                        self.loadFileContent()
+                        self.loadFileContentAsync()
                     }
                 }
             }
@@ -193,7 +217,7 @@ final class TextEditorPanel: Panel, ObservableObject {
                 if FileManager.default.fileExists(atPath: self.filePath) {
                     self.isFileUnavailable = false
                     if !self.isDirty {
-                        self.loadFileContent()
+                        self.loadFileContentAsync()
                     }
                     self.startFileWatcher()
                 } else {
