@@ -2743,6 +2743,14 @@ struct ContentView: View {
                             }
                     )
                     .modifier(SidebarResizerAccessibilityModifier(accessibilityIdentifier: "FileBrowserDrawerResizer"))
+                    .onDisappear {
+                        if isDrawerResizerDragging {
+                            TerminalWindowPortalRegistry.endInteractiveGeometryResize()
+                            isDrawerResizerDragging = false
+                            drawerDragStartWidth = nil
+                        }
+                        scheduleSidebarResizerCursorRelease(force: true)
+                    }
 
                 Color.clear
                     .frame(maxWidth: .infinity)

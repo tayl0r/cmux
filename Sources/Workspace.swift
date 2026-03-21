@@ -11783,6 +11783,35 @@ extension Workspace: BonsplitDelegate {
             return false
         }
 
+        // Check if a dirty text editor needs close confirmation
+        if let panelId = panelIdFromSurfaceId(tab.id),
+           let textEditorPanel = panels[panelId] as? TextEditorPanel,
+           textEditorPanel.isDirty {
+            clearStagedClosedBrowserRestoreSnapshot(for: tab.id)
+            if pendingCloseConfirmTabIds.contains(tab.id) {
+                return false
+            }
+
+            pendingCloseConfirmTabIds.insert(tab.id)
+            let tabId = tab.id
+            DispatchQueue.main.async { [weak self] in
+                guard let self else { return }
+                Task { @MainActor in
+                    defer { self.pendingCloseConfirmTabIds.remove(tabId) }
+
+                    guard self.panelIdFromSurfaceId(tabId) != nil else { return }
+
+                    let confirmed = await self.confirmClosePanel(for: tabId)
+                    guard confirmed else { return }
+
+                    self.forceCloseTabIds.insert(tabId)
+                    self.bonsplitController.closeTab(tabId)
+                }
+            }
+
+            return false
+        }
+
         // Check if the panel needs close confirmation
         guard let panelId = panelIdFromSurfaceId(tab.id),
               let terminalPanel = terminalPanel(for: panelId) else {
@@ -12080,6 +12109,12 @@ extension Workspace: BonsplitDelegate {
         let tabs = controller.tabs(inPane: pane)
         for tab in tabs {
             if forceCloseTabIds.contains(tab.id) { continue }
+            if let panelId = panelIdFromSurfaceId(tab.id),
+               let textEditorPanel = panels[panelId] as? TextEditorPanel,
+               textEditorPanel.isDirty {
+                pendingPaneClosePanelIds.removeValue(forKey: pane.id)
+                return false
+            }
             if let panelId = panelIdFromSurfaceId(tab.id),
                let terminalPanel = terminalPanel(for: panelId),
                panelNeedsConfirmClose(panelId: panelId, fallbackNeedsConfirmClose: terminalPanel.needsConfirmClose()) {

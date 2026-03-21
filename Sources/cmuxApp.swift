@@ -5988,6 +5988,8 @@ struct SettingsView: View {
         socketPasswordStatusIsError = false
         refreshDetectedImportBrowsers()
         KeyboardShortcutSettings.resetAll()
+        UserDefaults.standard.removeObject(forKey: TextEditorThemeSettings.darkThemeKey)
+        UserDefaults.standard.removeObject(forKey: TextEditorThemeSettings.lightThemeKey)
         WorkspaceTabColorSettings.reset()
         reloadWorkspaceTabColorSettings()
         shortcutResetToken = UUID()

@@ -87,8 +87,9 @@ struct TextEditorPanelView: View {
             if isVisibleInUI {
                 TextEditorPointerObserver(
                     onPointerDown: onRequestPanelFocus,
+                    isFocused: isFocused,
                     onSave: {
-                        try? panel.save()
+                        do { try panel.save() } catch { NSSound.beep() }
                     }
                 )
             }
@@ -131,6 +132,8 @@ struct TextEditorPanelView: View {
     // MARK: - Language detection
 
     private var codeLanguage: CodeEditor.Language {
+        let basename = (panel.filePath as NSString).lastPathComponent.lowercased()
+        if basename == "dockerfile" || basename.hasPrefix("dockerfile.") { return .dockerfile }
         let ext = (panel.filePath as NSString).pathExtension.lowercased()
         switch ext {
         case "swift": return .swift
@@ -270,23 +273,27 @@ struct TextEditorPanelView: View {
 
 private struct TextEditorPointerObserver: NSViewRepresentable {
     let onPointerDown: () -> Void
+    var isFocused: Bool = false
     var onSave: (() -> Void)?
 
     func makeNSView(context: Context) -> TextEditorPointerObserverView {
         let view = TextEditorPointerObserverView()
         view.onPointerDown = onPointerDown
+        view.isFocused = isFocused
         view.onSave = onSave
         return view
     }
 
     func updateNSView(_ nsView: TextEditorPointerObserverView, context: Context) {
         nsView.onPointerDown = onPointerDown
+        nsView.isFocused = isFocused
         nsView.onSave = onSave
     }
 }
 
 final class TextEditorPointerObserverView: NSView {
     var onPointerDown: (() -> Void)?
+    var isFocused: Bool = false
     var onSave: (() -> Void)?
     private var pointerMonitor: Any?
     private var keyMonitor: Any?
@@ -333,6 +340,7 @@ final class TextEditorPointerObserverView: NSView {
 
         keyMonitor = NSEvent.addLocalMonitorForEvents(matching: [.keyDown]) { [weak self] event in
             guard let self,
+                  self.isFocused,
                   event.modifierFlags.intersection(.deviceIndependentFlagsMask) == .command,
                   event.charactersIgnoringModifiers == "s",
                   let window = self.window,

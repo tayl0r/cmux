@@ -105,6 +105,7 @@ final class FileBrowserCoordinator: ObservableObject {
 
     private var currentRootPath: String?
     private nonisolated(unsafe) var directoryWatchSource: DispatchSourceFileSystemObject?
+    private var loadGeneration: UInt64 = 0
 
     private static let loadQueue = DispatchQueue(label: "com.cmux.file-browser", qos: .userInitiated)
 
@@ -147,19 +148,25 @@ final class FileBrowserCoordinator: ObservableObject {
 
     private func loadRootDirectory() {
         guard let path = currentRootPath else { return }
+        loadGeneration &+= 1
+        let generation = loadGeneration
         Self.loadQueue.async { [weak self] in
             let entries = FileBrowserCoordinator.loadDirectorySync(atPath: path, showHidden: false)
             DispatchQueue.main.async {
-                self?.rootEntries = entries
+                guard let self, generation == self.loadGeneration else { return }
+                self.rootEntries = entries
             }
         }
     }
 
     private func loadSubdirectory(_ path: String) {
+        loadGeneration &+= 1
+        let generation = loadGeneration
         Self.loadQueue.async { [weak self] in
             let entries = FileBrowserCoordinator.loadDirectorySync(atPath: path, showHidden: false)
             DispatchQueue.main.async {
-                self?.directoryContents[path] = entries
+                guard let self, generation == self.loadGeneration else { return }
+                self.directoryContents[path] = entries
             }
         }
     }
@@ -228,6 +235,7 @@ final class FileBrowserCoordinator: ObservableObject {
     func stopDirectoryWatcher() {
         directoryWatchSource?.cancel()
         directoryWatchSource = nil
+        currentRootPath = nil
     }
 
     deinit {
