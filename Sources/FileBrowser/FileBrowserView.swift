@@ -21,7 +21,7 @@ struct FileBrowserView: View {
             coordinator.setRootPath(rootPath)
         }
         .onDisappear {
-            coordinator.stopDirectoryWatcher()
+            coordinator.reset()
         }
         .onChange(of: rootPath) { newPath in
             coordinator.setRootPath(newPath)
@@ -236,6 +236,11 @@ final class FileBrowserCoordinator: ObservableObject {
     func stopDirectoryWatcher() {
         directoryWatchSource?.cancel()
         directoryWatchSource = nil
+    }
+
+    /// Called on disappear — clears root path so reappear with same path re-arms.
+    func reset() {
+        stopDirectoryWatcher()
         currentRootPath = nil
     }
 
