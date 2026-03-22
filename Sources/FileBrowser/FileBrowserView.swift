@@ -151,7 +151,7 @@ final class FileBrowserCoordinator: ObservableObject {
         loadGeneration &+= 1
         let generation = loadGeneration
         Self.loadQueue.async { [weak self] in
-            let entries = FileBrowserCoordinator.loadDirectorySync(atPath: path, showHidden: false)
+            let entries = FileBrowserCoordinator.loadDirectorySync(atPath: path, showHidden: true)
             DispatchQueue.main.async {
                 guard let self, generation == self.loadGeneration else { return }
                 self.rootEntries = entries
@@ -163,7 +163,7 @@ final class FileBrowserCoordinator: ObservableObject {
         loadGeneration &+= 1
         let generation = loadGeneration
         Self.loadQueue.async { [weak self] in
-            let entries = FileBrowserCoordinator.loadDirectorySync(atPath: path, showHidden: false)
+            let entries = FileBrowserCoordinator.loadDirectorySync(atPath: path, showHidden: true)
             DispatchQueue.main.async {
                 guard let self, generation == self.loadGeneration else { return }
                 self.directoryContents[path] = entries
