@@ -12112,7 +12112,17 @@ extension Workspace: BonsplitDelegate {
             if let panelId = panelIdFromSurfaceId(tab.id),
                let textEditorPanel = panels[panelId] as? TextEditorPanel,
                textEditorPanel.isDirty {
-                pendingPaneClosePanelIds.removeValue(forKey: pane.id)
+                let tabId = tab.id
+                DispatchQueue.main.async { [weak self] in
+                    guard let self else { return }
+                    Task { @MainActor in
+                        let confirmed = await self.confirmClosePanel(for: tabId)
+                        if confirmed {
+                            self.forceCloseTabIds.insert(tabId)
+                            self.bonsplitController.closePane(pane)
+                        }
+                    }
+                }
                 return false
             }
             if let panelId = panelIdFromSurfaceId(tab.id),
