@@ -187,6 +187,7 @@ struct TextEditorPanelView: View {
                 Circle()
                     .fill(Color.primary.opacity(0.4))
                     .frame(width: 6, height: 6)
+                    .accessibilityLabel(String(localized: "textEditor.dirty.accessibilityLabel", defaultValue: "Unsaved changes"))
             }
             Spacer()
         }

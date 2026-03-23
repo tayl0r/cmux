@@ -2670,13 +2670,14 @@ struct ContentView: View {
         }
 
         // No existing text editor — split from the focused panel.
-        if let focusedPanelId = workspace.focusedPanelId {
-            _ = workspace.newTextEditorSplit(
-                from: focusedPanelId,
-                orientation: .horizontal,
-                filePath: path,
-                focus: true
-            )
+        if let focusedPanelId = workspace.focusedPanelId,
+           workspace.newTextEditorSplit(
+               from: focusedPanelId,
+               orientation: .horizontal,
+               filePath: path,
+               focus: true
+           ) != nil {
+            // Split succeeded
         } else if let paneId = workspace.bonsplitController.focusedPaneId {
             _ = workspace.newTextEditorSurface(
                 inPane: paneId,
@@ -2748,6 +2749,7 @@ struct ContentView: View {
                             TerminalWindowPortalRegistry.endInteractiveGeometryResize()
                             isDrawerResizerDragging = false
                             drawerDragStartWidth = nil
+                            fileBrowserDrawerState.persistedWidth = drawerWidth
                         }
                         scheduleSidebarResizerCursorRelease(force: true)
                     }
@@ -3576,12 +3578,16 @@ struct ContentView: View {
         view = AnyView(view.onChange(of: drawerWidth) { _ in
             if let observedWindow {
                 TerminalWindowPortalRegistry.scheduleExternalGeometrySynchronize(for: observedWindow)
+            } else {
+                TerminalWindowPortalRegistry.scheduleExternalGeometrySynchronizeForAllWindows()
             }
         })
 
         view = AnyView(view.onChange(of: fileBrowserDrawerState.isVisible) { _ in
             if let observedWindow {
                 TerminalWindowPortalRegistry.scheduleExternalGeometrySynchronize(for: observedWindow)
+            } else {
+                TerminalWindowPortalRegistry.scheduleExternalGeometrySynchronizeForAllWindows()
             }
         })
 
