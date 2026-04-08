@@ -2205,6 +2205,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
     weak var tabManager: TabManager?
     weak var notificationStore: TerminalNotificationStore?
     weak var sidebarState: SidebarState?
+    weak var fileBrowserDrawerState: FileBrowserDrawerState?
     weak var fullscreenControlsViewModel: TitlebarControlsViewModel?
     weak var sidebarSelectionState: SidebarSelectionState?
     var shortcutLayoutCharacterProvider: (UInt16, NSEvent.ModifierFlags) -> String? = KeyboardLayout.character(forKeyCode:modifierFlags:)
@@ -2938,10 +2939,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
         _ = saveSessionSnapshot(includeScrollback: true, removeWhenEmpty: false)
     }
 
-    func configure(tabManager: TabManager, notificationStore: TerminalNotificationStore, sidebarState: SidebarState) {
+    func configure(tabManager: TabManager, notificationStore: TerminalNotificationStore, sidebarState: SidebarState, fileBrowserDrawerState: FileBrowserDrawerState) {
         self.tabManager = tabManager
         self.notificationStore = notificationStore
         self.sidebarState = sidebarState
+        self.fileBrowserDrawerState = fileBrowserDrawerState
         disableSuddenTerminationIfNeeded()
         installLifecycleSnapshotObserversIfNeeded()
         prepareStartupSessionSnapshotIfNeeded()
@@ -4086,7 +4088,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
         tabManager: TabManager,
         sidebarState: SidebarState,
         sidebarSelectionState: SidebarSelectionState,
-        fileBrowserDrawerState: FileBrowserDrawerState? = nil
+        fileBrowserDrawerState: FileBrowserDrawerState
     ) {
         tabManager.window = window
 
@@ -4105,7 +4107,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
                 tabManager: tabManager,
                 sidebarState: sidebarState,
                 sidebarSelectionState: sidebarSelectionState,
-                fileBrowserDrawerState: fileBrowserDrawerState ?? FileBrowserDrawerState(),
+                fileBrowserDrawerState: fileBrowserDrawerState,
                 window: window
             )
             NotificationCenter.default.addObserver(

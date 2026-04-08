@@ -196,7 +196,7 @@ struct cmuxApp: App {
 
         // UI tests depend on AppDelegate wiring happening even if SwiftUI view appearance
         // callbacks (e.g. `.onAppear`) are delayed or skipped.
-        appDelegate.configure(tabManager: tabManager, notificationStore: notificationStore, sidebarState: sidebarState)
+        appDelegate.configure(tabManager: tabManager, notificationStore: notificationStore, sidebarState: sidebarState, fileBrowserDrawerState: fileBrowserDrawerState)
     }
 
     private static func terminateForMissingLaunchTag() -> Never {
@@ -330,7 +330,7 @@ struct cmuxApp: App {
 #endif
                     // Start the Unix socket controller for programmatic access
                     updateSocketController()
-                    appDelegate.configure(tabManager: tabManager, notificationStore: notificationStore, sidebarState: sidebarState)
+                    appDelegate.configure(tabManager: tabManager, notificationStore: notificationStore, sidebarState: sidebarState, fileBrowserDrawerState: fileBrowserDrawerState)
                     cmuxConfigStore.wireDirectoryTracking(tabManager: tabManager)
                     cmuxConfigStore.loadAll()
                     applyAppearance()
