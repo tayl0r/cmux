@@ -69187,6 +69187,23 @@
         }
       }
     },
+    "textEditor.dirty.accessibilityLabel": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unsaved changes"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "未保存の変更"
+          }
+        }
+      }
+    },
     "textEditor.save.error": {
       "extractionState": "manual",
       "localizations": {

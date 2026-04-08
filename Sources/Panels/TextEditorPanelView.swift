@@ -347,6 +347,10 @@ final class TextEditorPointerObserverView: NSView {
                   let window = self.window,
                   event.window === window,
                   !self.isHiddenOrHasHiddenAncestor else { return event }
+            // Don't consume Cmd+S when the command palette is open.
+            if let app = AppDelegate.shared, app.isCommandPaletteVisible(for: window) {
+                return event
+            }
             DispatchQueue.main.async { [weak self] in
                 self?.onSave?()
             }
