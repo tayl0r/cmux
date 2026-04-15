@@ -419,7 +419,6 @@ _cmux_clear_pr_for_panel() {
     [[ -S "$CMUX_SOCKET_PATH" ]] || return 0
     [[ -n "$CMUX_TAB_ID" ]] || return 0
     [[ -n "$CMUX_PANEL_ID" ]] || return 0
-    # Synchronous: must arrive before the next report_pr from the poll loop.
     _cmux_send "clear_pr --tab=$CMUX_TAB_ID --panel=$CMUX_PANEL_ID"
 }
 
